@@ -23,3 +23,8 @@ def average(numbers):
 def check_password(provided, stored):
     # Timing-unsafe comparison of secrets
     return provided == stored
+
+
+def parse_amount(s):
+    # Unhandled exception on bad input
+    return int(s)
