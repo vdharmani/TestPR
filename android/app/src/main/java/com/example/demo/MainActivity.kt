@@ -11,6 +11,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.demo.ui.LoginScreen
 import com.example.demo.ui.SignupScreen
+import com.example.demo.ui.WelcomeScreen
+
+private enum class Screen { WELCOME, LOGIN, SIGNUP }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,17 +21,22 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface {
-                    var showSignup by remember { mutableStateOf(false) }
+                    var currentScreen by remember { mutableStateOf(Screen.WELCOME) }
 
-                    if (showSignup) {
-                        SignupScreen(
-                            onSignupClick = { _, _, _ -> showSignup = false },
-                            onLoginClick = { showSignup = false }
+                    when (currentScreen) {
+                        Screen.WELCOME -> WelcomeScreen(
+                            onLoginClick = { currentScreen = Screen.LOGIN },
+                            onSignupClick = { currentScreen = Screen.SIGNUP }
                         )
-                    } else {
-                        LoginScreen(
+
+                        Screen.LOGIN -> LoginScreen(
                             onLoginClick = { _, _ -> },
-                            onSignupClick = { showSignup = true }
+                            onSignupClick = { currentScreen = Screen.SIGNUP }
+                        )
+
+                        Screen.SIGNUP -> SignupScreen(
+                            onSignupClick = { _, _, _ -> currentScreen = Screen.LOGIN },
+                            onLoginClick = { currentScreen = Screen.LOGIN }
                         )
                     }
                 }
