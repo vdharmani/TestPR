@@ -19,16 +19,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoginScreen(
-    onLoginClick: (email: String, password: String) -> Unit = { _, _ -> },
-    onSignupClick: () -> Unit = {}
+fun SignupScreen(
+    onSignupClick: (name: String, email: String, password: String) -> Unit = { _, _, _ -> },
+    onLoginClick: () -> Unit = {}
 ) {
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -38,14 +41,22 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Welcome Back",
+            text = "Create Account",
             style = MaterialTheme.typography.headlineMedium
         )
 
         Text(
-            text = "Sign in to continue",
+            text = "Sign up to get started",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(top = 8.dp, bottom = 32.dp)
+        )
+
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Full Name") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
@@ -53,7 +64,9 @@ fun LoginScreen(
             onValueChange = { email = it },
             label = { Text("Email") },
             singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
         )
 
         OutlinedTextField(
@@ -61,35 +74,47 @@ fun LoginScreen(
             onValueChange = { password = it },
             label = { Text("Password") },
             singleLine = true,
-            visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+        )
+
+        OutlinedTextField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            label = { Text("Confirm Password") },
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
         )
 
         Button(
-            onClick = { onLoginClick(email, password) },
+            onClick = { onSignupClick(name, email, password) },
+            enabled = password.isNotEmpty() && password == confirmPassword,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 24.dp)
                 .height(48.dp)
         ) {
-            Text("Log In")
+            Text("Sign Up")
         }
 
         TextButton(
-            onClick = onSignupClick,
+            onClick = onLoginClick,
             modifier = Modifier.padding(top = 8.dp)
         ) {
-            Text("Don't have an account? Sign up")
+            Text("Already have an account? Log in")
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
+fun SignupScreenPreview() {
     MaterialTheme {
-        LoginScreen()
+        SignupScreen()
     }
 }
